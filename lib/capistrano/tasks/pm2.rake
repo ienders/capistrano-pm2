@@ -5,7 +5,7 @@ namespace :pm2 do
   task :start_or_graceful_reload do
     on roles fetch(:pm2_roles) do
       app_names.each do |app_name|
-        run_task :pm2, :startOrGracefulReload, fetch(:pm2_app_command), "--name #{app_name} #{fetch(:pm2_start_params)}"
+        run_task :pm2, :startOrReload, fetch(:pm2_app_command)
       end
     end
   end
