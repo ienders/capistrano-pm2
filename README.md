@@ -56,9 +56,18 @@ cap pm2:stop                       # Stop pm2 application
 
 Configurable options:
 ```ruby
-set :pm2_app_command, 'main.js'                   # default, runs main.js
 set :pm2_app_name, nil                            # app name for pm2, default cap :application
+
+set :pm2_app_command, 'main.js'                   # default, runs main.js
 set :pm2_target_path, -> { release_path.join('subdir') } # default not set
+
+# Or Alternatively, you can replace the prior two options with a PM2 Process File
+# See: http://pm2.keymetrics.io/docs/usage/application-declaration/
+# Note: You'll still want to have a proper :pm2_app_name set to query logs, get status, etc.
+# for the application that you're actually deploying.
+
+set :pm2_process_file, '/var/www/myapp/shared/pm2.config.js'  # Example, defaults to nil
+
 set :pm2_roles, :all                              # default, cap roles to run on
 set :pm2_env_variables, {}                        # default, env vars for pm2
 set :pm2_start_params, ''                         # default, pm2 start params see http://pm2.keymetrics.io/docs/usage/quick-start/#cheat-sheet

@@ -4,7 +4,7 @@ namespace :pm2 do
   desc 'Start or gracefully reaload app'
   task :start_or_graceful_reload do
     app_names.each do |app_name|
-      run_task :pm2, :startOrReload, fetch(:pm2_app_command), "--name #{app_name} #{fetch(:pm2_start_params)}"
+      run_task :pm2, :startOrReload, *app_command_args
     end
   end
   task :restart => :start_or_graceful_reload
@@ -17,7 +17,7 @@ namespace :pm2 do
   desc 'Start pm2 application'
   task :start do
     app_names.each do |app_name|
-      run_task :pm2, :start, fetch(:pm2_app_command), "--name #{app_name} #{fetch(:pm2_start_params)}"
+      run_task :pm2, :start, *app_command_args
     end
   end
 
@@ -54,6 +54,14 @@ namespace :pm2 do
     fetch(:pm2_app_name) || fetch(:application)
   end
 
+  def app_command_args
+    start_params = fetch :pm2_start_params
+    if process_file = fetch(:pm2_process_file)
+      return [ process_file, "--only #{app_name} #{start_params}" ]
+    end
+    [ fetch(:pm2_app_command), "--name #{app_name} #{start_params}" ]
+  end
+
   def restart_app
     within fetch(:pm2_target_path, current_path) do
       app_names.each {|app_name| execute :pm2, :reload, app_name}
@@ -76,6 +84,7 @@ namespace :load do
     set :pm2_app_command, 'main.js'
     set :pm2_app_name, nil
     set :pm2_app_names, nil
+    set :pm2_process_file, nil
     set :pm2_start_params, ''
     set :pm2_roles, :all
     set :pm2_env_variables, {}
