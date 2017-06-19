@@ -4,7 +4,7 @@ namespace :pm2 do
   desc 'Start or gracefully reaload app'
   task :start_or_graceful_reload do
     app_names.each do |app_name|
-      run_task :pm2, :startOrReload, *app_command_args
+      run_task :pm2, :startOrGracefulReload, *app_command_args
     end
   end
   task :restart => :start_or_graceful_reload
